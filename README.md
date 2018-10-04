@@ -1,6 +1,6 @@
 # hacker-typing
-A crappy version of hackertype, with retro keypress audio
+A crappy version of hackertype, with retro keypress audio.
 
-just for a quick evening hack
+Start typing and it will blurt out random keywords. 
 
 ![gif](https://i.imgur.com/UpcQHqz.gif)
