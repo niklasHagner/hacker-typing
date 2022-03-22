@@ -42,12 +42,15 @@ function printRandomCode(keypressCount) {
   }
 
   var time = new Date().getTime();
-  let str = "";
+  let str = "", newWord = "";
   if (time % 2 === 0) {
-    str += getRandomKeyWord();
+    newWord = getRandomKeyWord(window.lastWord);
+    str+= newWord;
   } else {
-    str += getRandomVariableName() + " "; 
+    newWord = getRandomVariableName(window.lastWord);
+    str += newWord + " "; 
   }
+  window.lastWord = newWord;
 
   if (time % 15 === 0) { 
     str += "\n";
@@ -65,25 +68,30 @@ var staticKeywords = [
 "long ", "native ", "new ", "package ", "private ", "protected ", "short ", "static ", "switch ", 
 "synchronized ", "this.", "throws ", "transient ", "true ", "typeof ", "var ", "void ", "while ", "with ", "yield "];
 
-var randomParams = ["x", "y", "name", "description", "length", "size", "cacheTime", "id", "options"];
+var randomParams = ["x", "y", "foo", "bar", "age", "coordinates", "name", "description", "length", "size", "cacheTime", "id", "options", "filters"];
 
 var randomDOMKeywords = ["accessKey", "addEventListener()", "appendChild()", "attributes", "blur()", "childElementCount", "childNodes", "children", "classList", "className", "click()", "clientHeight", "clientLeft", "clientTop", "clientWidth", "cloneNode()", "compareDocumentPosition()", "contains()", "contentEditable", "dir", "exitFullscreen()", "firstChild", "firstElementChild", "focus()", "getAttribute()", "getAttributeNode()", "getBoundingClientRect()", "getElementsByClassName()", "getElementsByTagName()", "hasAttribute()", "hasAttributes()", "hasChildNodes()", "id", "innerHTML", "innerText", "insertAdjacentElement()", "insertAdjacentHTML()", "insertAdjacentText()", "insertBefore()", "isContentEditable", "isDefaultNamespace()", "isEqualNode()", "isSameNode()", "isSupported()", "lang", "lastChild", "lastElementChild", "namespaceURI", "nextSibling", "nextElementSibling", "nodeName", "nodeType", "nodeValue", "normalize()", "offsetHeight", "offsetWidth", "offsetLeft", "offsetParent", "offsetTop", "ownerDocument", "parentNode", "parentElement", "previousSibling", "previousElementSibling", "querySelector()", "querySelectorAll()", "removeAttribute()", "removeAttributeNode()", "removeChild()", "removeEventListener()", "replaceChild()", "requestFullscreen()", "scrollHeight", "scrollIntoView()", "scrollLeft", "scrollTop", "scrollWidth", "setAttribute()", "setAttributeNode()", "style", "tabIndex", "tagName", "textContent", "title"];
 
 var randomVariableNames = [
-  "x", "y", "name", "description", "length", "size", "cacheTime", "id", "options",
-  "date", "time", "cooldown", "max", "min", "ms", "database", "table", "fps", "metric",
-  "throttle", "user", "account", "payload"
+  "x", "y", "name", "description", "length", "size", "cacheTime", "ID", "options", "geoCoordinates", "rateLimiter",
+  "date", "time", "cooldown", "max", "min", "ms", "database", "table", "frameRate", "metric", "cooldownTime", "upperLimit",
+  "throttle", "user", "account", "payload", "employeeFactory", "deployConfiguration", "accessModulator", 
 ];
 
-function getRandomVariableName() {
-  return randomVariableNames[Math.floor(randomVariableNames.length * Math.random())];
+function getRandomVariableName(excludeWord) {
+  const arr = randomVariableNames;
+  if (excludeWord) {
+    const indexToRemove = arr.indexOf(excludeWord);
+    arr.splice(indexToRemove, 1);
+  }
+  return arr[Math.floor(arr.length * Math.random())];
 }
 
 
 
 function getRandomStartingCode() {
   var var1 = getRandomVariableName();
-  var var2 = getRandomVariableName();
+  var var2 = getRandomVariableName(var1);
 
   var param1 = getRandomParams(1);
   var param2 = getRandomParams(1);
@@ -100,7 +108,6 @@ function getRandomFunctionalKeyword() {
   var var1 = getRandomVariableName();
   var var2 = getRandomVariableName();
 
-  
   var param1 = getRandomParams(1);
   var param2 = getRandomParams(1);
   var functionalKeywords = [
@@ -121,13 +128,18 @@ function getRandomParams(maxAmount = 1) {
   return params.join(",");
 }
 
-function getRandomKeyWord() {
+function getRandomKeyWord(excludedWord) {
   var time = new Date().getTime();
   if (time % 13 === 0) {
-    return getRandomFunctionalKeyword();
+    return getRandomFunctionalKeyword(lastWordUsed);
   }
   else if (time % 4 === 0) {
-    return randomDOMKeywords[Math.floor(randomDOMKeywords.length * Math.random())] + " ";
+    var arr = randomDOMKeywords;
+    if (excludedWord) {
+      const indexToRemove = arr.indexOf(excludeWord);
+      arr.splice(indexToRemove, 1);
+    }
+    return arr[Math.floor(arr.length * Math.random())] + " ";
   }
   else if (time % 15 === 0) {
     return "\n}\n";
